@@ -40,7 +40,8 @@ protected:
 	void calculateFPS();
 
 	// draw primitive functions
-	
+	void placePointLight();
+	void drawCube();
 
 	// For access to user input.
 	Input* input;
@@ -53,6 +54,8 @@ protected:
 	int frame = 0, time, timebase = 0;
 	char fps[40];
 	char mouseText[40];
+
+
 
 };
 

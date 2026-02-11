@@ -38,9 +38,22 @@ void Scene::render() {
 	// Set the camera
 	gluLookAt(0.0f, 0.0f, 6.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 	
+	//lighting
+	GLfloat Light_Ambient[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+	GLfloat Light_Diffuse[] = { 1.0f, 1.0f, 1.0f, 0.0f };
+	GLfloat Light_DiffuseDirection[] = { 0.0f, -1.0f, 0.0f, 0.0f };
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, Light_Ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, Light_Diffuse);
+	glLightfv(GL_LIGHT0, GL_POSITION, Light_DiffuseDirection); 
+	//glEnable(GL_LIGHT0);
+
+
 	// Render geometry/scene here -------------------------------------
 	
+	placePointLight();
 
+	drawCube();
 
 	// End render geometry --------------------------------------
 
@@ -62,6 +75,11 @@ void Scene::initialiseOpenGL()
 	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
 	glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
+
+	//lighting initialization
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
+
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	// Blending function
 }
@@ -95,6 +113,83 @@ void Scene::resize(int w, int h)
 
 	// Get Back to the Modelview
 	glMatrixMode(GL_MODELVIEW);
+}
+
+void Scene::placePointLight()
+{
+	glPushMatrix();	//StartCube
+		glRotatef(time / 50, 0, 0, 1);
+		glTranslatef(0, 1.5, 0);
+
+		GLfloat Light_Point[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		GLfloat Light_PointLocation[] = { 0.0f, 0.f, 0.0f, 1.0f };
+
+		glLightfv(GL_LIGHT1, GL_DIFFUSE, Light_Point);
+		glLightfv(GL_LIGHT1, GL_POSITION, Light_PointLocation);
+		glEnable(GL_LIGHT1);
+
+		glutWireSphere(0.3, 10, 7);
+
+	glPopMatrix(); //EndCube
+
+}
+
+
+void Scene::drawCube()
+{
+	glPushMatrix();	//StartCube
+		glRotatef(time / 50, time / 5, time / 10, 1);
+		glBegin(GL_QUADS);
+			//face 1
+			glNormal3f(0.0f, 0.0f, 1.0f);
+			glColor3f(1.f, 0.f, 0.f);
+			glVertex3f(-0.5f, 0.5f, 0.5f);
+			glVertex3f(0.5f, 0.5f, 0.5f);
+			glVertex3f(0.5f, -0.5f, 0.5f);
+			glVertex3f(-0.5f, -0.5f, 0.5f);
+
+			//face 2
+			glNormal3f(0.0f, 1.0f, 0.0f);
+			glColor3f(0.f, 0.f, 1.f);
+			glVertex3f(-0.5f, 0.5f, -0.5f);
+			glVertex3f(0.5f, 0.5f, -0.5f);
+			glVertex3f(0.5f, 0.5f, 0.5f);
+			glVertex3f(-0.5f, 0.5f, 0.5f);
+
+			//face 3
+			glNormal3f(0.0f, 0.0f, -1.0f);
+			glColor3f(1.f, 0.f, 0.f);
+			glVertex3f(-0.5f, 0.5f, -0.5f);
+			glVertex3f(0.5f, 0.5f, -0.5f);
+			glVertex3f(0.5f, -0.5f, -0.5f);
+			glVertex3f(-0.5f, -0.5f, -0.5f);
+
+			//face 4
+			glNormal3f(0.0f, -1.0f, 0.0f);
+			glColor3f(0.0f, 0.0f, 1.0f);
+			glVertex3f(-0.5f, -0.5f, -0.5f);
+			glVertex3f(0.5f, -0.5f, -0.5f);
+			glVertex3f(0.5f, -0.5f, 0.5f);
+			glVertex3f(-0.5f, -0.5f, 0.5f);
+
+			//face 5
+			glNormal3f(-1.0f, 0.0f, 0.0f);
+			glColor3f(0.0f, 1.0f, 0.0f);
+			glVertex3f(-0.5f, 0.5f, 0.5f);
+			glVertex3f(-0.5f, 0.5f, -0.5f);
+			glVertex3f(-0.5f, -0.5f, -0.5f);
+			glVertex3f(-0.5f, -0.5f, 0.5f);
+
+			//face 6
+			glNormal3f(1.0f, 0.0f, 0.0f);
+			glColor3f(0.0f, 1.0f, 0.0f);
+			glVertex3f(0.5f, 0.5f, 0.5f);
+			glVertex3f(0.5f, 0.5f, -0.5f);
+			glVertex3f(0.5f, -0.5f, -0.5f);
+			glVertex3f(0.5f, -0.5f, 0.5f);
+
+		glEnd();
+	glPopMatrix(); //EndCube
 }
 
 // Calculates FPS
